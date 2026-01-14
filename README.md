@@ -1,393 +1,262 @@
-# Smart Expense Tracker with Receipt OCR
+# Smart Expense Tracker
 
-## Problem Description
+## 📁 Project Structure
 
-**The Challenge:**
-Tracking personal expenses is tedious and time-consuming. People accumulate receipts but rarely log them consistently. By month's end, they've lost track of spending patterns, making budgeting and financial planning difficult. Existing solutions are either too complex (enterprise accounting software) or too basic (spreadsheets that require manual data entry).
 
-**The Solution:**
-A web application that simplifies expense tracking by:
-- **Automating data entry**: Upload receipt photos and automatically extract merchant, amount, date, and items using free OCR technology
-- **Manual entry option**: Quick form for expenses without receipts
-- **Smart categorization**: Organize expenses into categories (food, transport, utilities, entertainment, etc.)
-- **Visual analytics**: Interactive charts showing spending patterns by category and time
-- **Budget tracking**: Set monthly budgets and receive visual alerts when approaching limits
-- **Export capability**: Download expense data as CSV for tax purposes or further analysis
-
-**Target Users:**
-- Individuals tracking personal finances
-- Freelancers managing business expenses
-- Anyone wanting to understand their spending habits
-
-## System Architecture
-
-### Frontend
-- **React 18** with TypeScript for type safety
-- **Tailwind CSS** for responsive, modern UI
-- **Recharts** for data visualization (pie charts, trend graphs)
-- **Axios** with centralized API service layer
-- **Vite** for fast development and building
-
-### Backend
-- **FastAPI** (Python 3.11+) - Modern, fast web framework with automatic OpenAPI docs
-- **Tesseract OCR** - Free, open-source OCR engine for receipt text extraction
-- **Pillow** - Image preprocessing for better OCR accuracy
-- **SQLAlchemy** - ORM for database operations
-- **Pydantic** - Data validation matching OpenAPI schema
-
-### Database
-- **PostgreSQL** for production (robust, reliable)
-- **SQLite** for development/testing (zero configuration)
-- Environment-based configuration for seamless switching
-
-### Infrastructure & DevOps
-- **Docker & Docker Compose** - Full containerization of all services
-- **GitHub Actions** - CI/CD pipeline for automated testing and deployment
-- **Render/Railway** - Free tier cloud deployment
-- **pytest** - Backend testing with >80% coverage
-- **Vitest/React Testing Library** - Frontend component and integration testing
-
-## Features
-
-### Core Functionality
-1. ✅ **Receipt OCR Processing**
-   - Upload JPG/PNG receipt images
-   - Automatic extraction of merchant name, total amount, date
-   - Confidence scoring for OCR results
-   - Manual editing of extracted data
-
-2. ✅ **Manual Expense Entry**
-   - Quick form with merchant, amount, category, date
-   - Optional notes field
-   - Date picker with default to today
-
-3. ✅ **Expense Management**
-   - View all expenses in a sortable, filterable table
-   - Search by merchant name or notes
-   - Filter by date range, category, amount
-   - Edit or delete individual expenses
-
-4. ✅ **Analytics Dashboard**
-   - Spending by category (pie chart)
-   - Monthly spending trends (line chart)
-   - Category comparison (bar chart)
-   - Total spending summary
-
-5. ✅ **Data Export**
-   - Export filtered expenses to CSV
-   - Includes all expense details
-   - Useful for tax records or external analysis
-
-### Technical Features
-- RESTful API following OpenAPI 3.0 specification
-- Comprehensive error handling and validation
-- Responsive design (mobile, tablet, desktop)
-- Database migrations for schema versioning
-- Environment-based configuration
-- Structured logging
-- Health check endpoints
-
-## Project Structure
-
-```
-expense-tracker/
-├── backend/
-│   ├── app/
-│   │   ├── __init__.py
-│   │   ├── main.py                 # FastAPI application entry point
-│   │   ├── config.py                # Environment configuration
-│   │   ├── database.py              # Database connection & session
-│   │   ├── models.py                # SQLAlchemy ORM models
-│   │   ├── schemas.py               # Pydantic schemas (validation)
-│   │   ├── routers/
-│   │   │   ├── __init__.py
-│   │   │   ├── expenses.py          # Expense CRUD endpoints
-│   │   │   ├── categories.py        # Category endpoints
-│   │   │   └── analytics.py         # Analytics & reporting
-│   │   ├── services/
-│   │   │   ├── __init__.py
-│   │   │   └── ocr_service.py       # Tesseract OCR integration
-│   │   └── tests/
-│   │       ├── __init__.py
-│   │       ├── conftest.py          # pytest fixtures
-│   │       ├── test_expenses.py     # Expense endpoint tests
-│   │       ├── test_categories.py   # Category tests
-│   │       ├── test_analytics.py    # Analytics tests
-│   │       └── test_ocr.py          # OCR service tests
-│   ├── uploads/                      # Receipt image storage
-│   ├── requirements.txt              # Python dependencies
-│   ├── Dockerfile                    # Backend container
-│   ├── pytest.ini                    # pytest configuration
-│   └── alembic/                      # Database migrations
-│       ├── versions/
-│       └── env.py
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── ExpenseForm.tsx      # Manual entry form
-│   │   │   ├── ExpenseList.tsx      # Expense table
-│   │   │   ├── ReceiptUpload.tsx    # OCR upload component
-│   │   │   ├── Dashboard.tsx        # Analytics dashboard
-│   │   │   ├── CategoryFilter.tsx   # Filter controls
-│   │   │   └── charts/
-│   │   │       ├── PieChart.tsx
-│   │   │       ├── TrendChart.tsx
-│   │   │       └── BarChart.tsx
-│   │   ├── services/
-│   │   │   └── api.ts               # Centralized API client
-│   │   ├── types/
-│   │   │   └── index.ts             # TypeScript interfaces
-│   │   ├── App.tsx                  # Main application
-│   │   ├── main.tsx                 # Entry point
-│   │   └── tests/
-│   │       ├── ExpenseForm.test.tsx
-│   │       ├── Dashboard.test.tsx
-│   │       └── api.test.ts
-│   ├── public/
-│   ├── index.html
-│   ├── package.json
-│   ├── tsconfig.json
-│   ├── vite.config.ts
-│   ├── tailwind.config.js
-│   └── Dockerfile
-├── docker-compose.yml                # Multi-container orchestration
+smart-expense-tracker/
 ├── .github/
 │   └── workflows/
-│       └── ci-cd.yml                 # CI/CD pipeline
-├── openapi.yaml                      # API contract specification
-├── README.md                         # This file
-├── AGENTS.md                         # AI development workflow
-└── .env.example                      # Environment variables template
-```
+│       └── ci.yml                  # CI pipeline (tests & checks)
+│
+├── backend/
+│   ├── app/
+│   │   ├── main.py                 # FastAPI app entry point
+│   │   ├── config.py               # Environment & database configuration
+│   │   ├── database.py             # SQLAlchemy engine & session
+│   │   ├── models.py               # Database models
+│   │   ├── schemas.py              # Pydantic request/response schemas
+│   │   ├── routers/                # API route definitions
+│   │   │   ├── expenses.py
+│   │   │   ├── categories.py
+│   │   │   └── analytics.py
+│   │   ├── services/               # Business logic layer
+│   │   │   └── analytics_service.py
+│   │   └── tests/                  # Backend unit & integration tests
+│   │
+│   ├── Dockerfile                  # Backend container definition
+│   │   └── requirements.txt        # Python dependencies
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/             # Reusable UI components
+│   │   │   └── charts/             # Data visualization components
+│   │   ├── services/               # Centralized API calls
+│   │   ├── types/                  # Shared TypeScript types
+│   │   ├── tests/                  # Frontend tests
+│   │   └── main.tsx
+│   │
+│   ├── public/
+│   ├── Dockerfile                  # Frontend container definition
+│   └── package.json
+│
+├── docker-compose.yml               # Full system orchestration
+├── README.md                        # Project documentation
+└── .env.example                     # Environment variable template
 
-## Prerequisites
+📌 Problem Description
+Managing personal expenses is often fragmented across spreadsheets, notes, or basic mobile apps that provide little insight into spending behavior. Users struggle to understand where their money goes, identify spending patterns, and make informed financial decisions.
 
-- **Docker** & **Docker Compose** (recommended for easiest setup)
-- OR manually install:
-  - Python 3.11+
-  - Node.js 18+
-  - PostgreSQL 14+ (or use SQLite for development)
-  - Tesseract OCR
+Smart Expense Tracker is a full-stack web application designed to help users:
 
-## Quick Start with Docker (Recommended)
+Record and categorize daily expenses
 
-```bash
-# 1. Clone the repository
-git clone <repository-url>
-cd expense-tracker
+Store data persistently in a relational database
 
-# 2. Create environment file
-cp .env.example .env
-# Edit .env if needed (defaults work for Docker setup)
+Analyze spending trends over time
 
-# 3. Build and start all services
+Visualize expenses through charts and summaries
+
+The system provides a clean user interface backed by a structured REST API and database, enabling reliable tracking and analysis of personal finances.
+
+🤖 AI-Assisted System Development (Tools, Workflow, MCP)
+This project was developed using AI-assisted programming workflows to accelerate development and improve code quality.
+
+AI Tools Used
+ChatGPT as a development assistant for:
+
+Designing FastAPI endpoints
+
+Structuring SQLAlchemy models and schemas
+
+Debugging Docker, database, and import issues
+
+Improving system architecture and documentation
+
+Development Workflow
+High-level feature planning and API design
+
+Backend scaffolding with FastAPI and SQLAlchemy
+
+Database integration and startup initialization
+
+Frontend development with a centralized API layer
+
+Containerization using Docker and docker-compose
+
+Iterative debugging and refinement using AI feedback
+
+MCP (Model Context Protocol)
+No external MCP server is deployed. However, context-driven prompting was used to maintain consistency across:
+
+API contracts
+
+Database models
+
+Frontend data expectations
+
+This ensured alignment between frontend requirements and backend implementation.
+
+🏗️ Technologies & System Architecture
+Frontend
+React with TypeScript
+
+Vite for development and bundling
+
+Recharts for data visualization
+
+Centralized API communication layer (services/)
+
+Backend
+FastAPI for REST API development
+
+SQLAlchemy ORM
+
+Pydantic schemas for validation
+
+Modular router-based architecture
+
+Database
+PostgreSQL as the primary database
+
+SQLAlchemy abstracts the database layer
+
+Architecture supports alternative databases (e.g., SQLite) with minimal changes
+
+Containerization
+Docker for frontend and backend services
+
+docker-compose orchestrates:
+
+Frontend
+
+Backend
+
+PostgreSQL database
+
+CI/CD
+GitHub Actions
+
+Automated tests and checks on push
+
+🎨 Frontend Implementation
+Fully functional React frontend
+
+Clean and modular component structure
+
+Backend communication centralized in frontend/src/services
+
+Charts and analytics implemented as reusable components
+
+Frontend tests cover core logic and API integration
+
+📜 API Contract (OpenAPI)
+FastAPI automatically generates OpenAPI / Swagger documentation
+
+Available at:
+
+bash
+Copy code
+http://localhost:8000/docs
+The OpenAPI specification serves as the contract between frontend and backend
+
+Endpoints are designed to reflect frontend data requirements precisely
+
+⚙️ Backend Implementation
+Well-structured FastAPI application
+
+Clear separation of concerns:
+
+Routers (API layer)
+
+Services (business logic)
+
+Models (database layer)
+
+Schemas (validation layer)
+
+Backend follows the OpenAPI contract
+
+Includes startup database initialization and default data insertion
+
+Backend tests cover core functionality
+
+🗄️ Database Integration
+PostgreSQL database with persistent Docker volumes
+
+SQLAlchemy ORM manages all database interactions
+
+Database initialization runs automatically on startup
+
+Designed to support multiple environments (development and production)
+
+🐳 Containerization
+The entire system runs using docker-compose.
+
+Start the system
+bash
+Copy code
 docker-compose up --build
+Services
+Frontend: http://localhost:5173
 
-# 4. Access the application
-# Frontend: http://localhost:5173
-# Backend API: http://localhost:8000
-# API Docs: http://localhost:8000/docs
-```
+Backend API: http://localhost:8000
 
-That's it! The application is now running with PostgreSQL database.
+Database: PostgreSQL (port 5432)
 
-## Manual Setup (Without Docker)
+No manual setup steps are required beyond Docker.
 
-### Backend Setup
+🧪 Testing & Validation
+Backend Testing
+Unit and integration tests included
 
-```bash
-cd backend
+Database-dependent workflows are tested
 
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+Tests are isolated from application logic
 
-# Install dependencies
-pip install -r requirements.txt
+Frontend Testing
+UI and service-level tests included
 
-# Install Tesseract OCR
-# Ubuntu/Debian: sudo apt-get install tesseract-ocr
-# macOS: brew install tesseract
-# Windows: Download from https://github.com/UB-Mannheim/tesseract/wiki
+Focus on API interaction and core logic
 
-# Set environment variables
-export DATABASE_URL=sqlite:///./expenses.db
-export UPLOAD_DIR=./uploads
+Testing Tips for Reviewers
+Ensure all containers are running before testing
 
-# Run database migrations
-alembic upgrade head
+Verify database tables are created on startup
 
-# Start the server
-uvicorn app.main:app --reload --port 8000
-```
+Check /docs endpoint for API availability
 
-### Frontend Setup
+Confirm frontend charts update after adding expenses
 
-```bash
-cd frontend
+🚀 Deployment
+Fully containerized and deployment-ready
 
-# Install dependencies
-npm install
+Can be deployed to any Docker-compatible environment
 
-# Set API URL
-echo "VITE_API_URL=http://localhost:8000" > .env
+Reproducible build process using docker-compose
 
-# Start development server
-npm run dev
-```
+🔁 CI/CD Pipeline
+GitHub Actions workflow included
 
-## Running Tests
+Automatically runs tests on push
 
-### Backend Tests
+Prevents broken builds from being merged
 
-```bash
-cd backend
-pytest --cov=app --cov-report=html
-# View coverage report: open htmlcov/index.html
-```
+♻️ Reproducibility
+Requirements
+Docker
 
-### Frontend Tests
+Docker Compose
 
-```bash
-cd frontend
-npm test
-npm run test:coverage
-```
+Steps
+bash
+Copy code
+git clone <repository-url>
+cd smart-expense-tracker
+docker-compose up --build
+On startup:
 
-### Integration Tests
+Database is initialized
 
-```bash
-# With Docker Compose running
-docker-compose exec backend pytest tests/test_integration.py
-```
+Default categories are inserted
 
-## Deployment
-
-### Prerequisites
-- GitHub account
-- Render.com or Railway.app account (both offer free tiers)
-
-### Steps
-
-1. **Push code to GitHub**
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin <your-repo-url>
-git push -u origin main
-```
-
-2. **Deploy Backend (Render)**
-   - Connect GitHub repository
-   - Select "Web Service"
-   - Build command: `pip install -r requirements.txt`
-   - Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-   - Add environment variables (DATABASE_URL will be auto-provided)
-
-3. **Deploy Frontend (Render)**
-   - Select "Static Site"
-   - Build command: `npm install && npm run build`
-   - Publish directory: `dist`
-   - Add environment variable: `VITE_API_URL=<backend-url>`
-
-4. **Automated Deployment**
-   - GitHub Actions workflow automatically runs tests on push
-   - Deployment triggers on successful test completion
-
-## API Documentation
-
-Once the backend is running, visit:
-- **Swagger UI**: http://localhost:8000/docs
-- **ReDoc**: http://localhost:8000/redoc
-- **OpenAPI JSON**: http://localhost:8000/openapi.json
-
-The API follows the OpenAPI 3.0 specification defined in `openapi.yaml`.
-
-## Environment Variables
-
-### Backend (.env)
-```
-DATABASE_URL=postgresql://user:password@localhost:5432/expenses
-# Or for development: sqlite:///./expenses.db
-UPLOAD_DIR=./uploads
-ENVIRONMENT=development
-LOG_LEVEL=INFO
-```
-
-### Frontend (.env)
-```
-VITE_API_URL=http://localhost:8000
-```
-
-## Technology Decisions
-
-### Why Tesseract OCR?
-- **Free & Open Source**: No API costs or usage limits
-- **Local Processing**: Privacy-friendly, no data sent to third parties
-- **Mature**: Industry standard with 30+ years of development
-- **Good Accuracy**: 85-95% accuracy on printed receipts with proper preprocessing
-
-### Why FastAPI?
-- **Modern Python**: Async support, type hints, automatic validation
-- **Auto-Documentation**: OpenAPI/Swagger docs generated automatically
-- **Fast**: Performance comparable to Node.js and Go
-- **Easy Testing**: Built-in test client
-
-### Why PostgreSQL?
-- **Production-Ready**: ACID compliance, robust
-- **Free**: Open source with no licensing costs
-- **SQLAlchemy Support**: Excellent ORM integration
-- **Scalable**: Can handle growth from prototype to production
-
-### Why React + TypeScript?
-- **Type Safety**: Catch errors at compile time
-- **Component Reusability**: Modular, maintainable code
-- **Large Ecosystem**: Libraries for charts, forms, etc.
-- **Developer Experience**: Fast refresh, excellent tooling
-
-## Development Workflow
-
-See [AGENTS.md](AGENTS.md) for detailed information about:
-- How AI tools (Claude) were used in development
-- MCP (Model Context Protocol) integration
-- Prompt engineering strategies
-- Code generation workflows
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Write tests for your changes
-4. Ensure all tests pass (`pytest` and `npm test`)
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-## License
-
-MIT License - See LICENSE file for details
-
-## Support
-
-For issues, questions, or contributions:
-- Open an issue on GitHub
-- Check existing documentation
-- Review API docs at `/docs` endpoint
-
-## Roadmap
-
-Future enhancements:
-- [ ] Mobile app (React Native)
-- [ ] Multi-user support with authentication
-- [ ] Recurring expense templates
-- [ ] Budget alerts via email/SMS
-- [ ] Receipt storage in cloud (S3/Cloudinary)
-- [ ] Advanced OCR with item-level extraction
-- [ ] Multiple currency support
-- [ ] Bank statement import
-- [ ] Expense sharing/splitting
-
----
-
-**Built with ❤️ using modern web technologies and AI-assisted development**
+Frontend and backend become immediately usable
