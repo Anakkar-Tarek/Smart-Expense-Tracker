@@ -1,18 +1,16 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:15-alpine
     environment:
-      POSTGRES_DB: expenses
       POSTGRES_USER: expense_user
       POSTGRES_PASSWORD: expense_pass
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      POSTGRES_DB: expense_db
     ports:
       - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U expense_user"]
+      test: ["CMD-SHELL", "pg_isready -U expense_user -d expense_db"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -24,16 +22,20 @@ services:
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://expense_user:expense_pass@postgres:5432/expenses
-      UPLOAD_DIR: /app/uploads
-      ENVIRONMENT: production
+      - DATABASE_URL=postgresql://expense_user:expense_pass@postgres:5432/expense_db
+      - UPLOAD_DIR=/app/uploads
     volumes:
-      - ./backend/uploads:/app/uploads
       - ./backend:/app
+      - upload_data:/app/uploads
     depends_on:
       postgres:
         condition: service_healthy
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: sh -c "
+      echo 'Waiting for database...' &&
+      sleep 5 &&
+      python init_db.py &&
+      uvicorn app.main:app --host 0.0.0.0 --port 8000
+      "
 
   frontend:
     build:
@@ -41,14 +43,14 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5173:5173"
-    environment:
-      VITE_API_URL: http://localhost:8000
     volumes:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
       - backend
-    command: npm run dev
+    environment:
+      - VITE_API_URL=http://localhost:8000
 
 volumes:
   postgres_data:
+  upload_data:

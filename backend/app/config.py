@@ -3,8 +3,11 @@ import os
 
 
 class Settings(BaseSettings):
-    # Database
-    database_url: str = "sqlite:///./expenses.db"
+    # Database - Use PostgreSQL in Docker, SQLite for local dev
+    database_url: str = os.getenv(
+        "DATABASE_URL",
+        "postgresql://expense_user:expense_pass@postgres:5432/expense_db"
+    )
 
     # File upload
     upload_dir: str = "./uploads"

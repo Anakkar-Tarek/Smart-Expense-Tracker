@@ -1,89 +1,53 @@
 from pydantic import BaseModel, Field, field_validator
-from datetime import date, datetime
+from datetime import datetime, date
 from typing import Optional
 
 
-class ExpenseBase(BaseModel):
-    """Base expense schema with common fields."""
-    merchant: str = Field(..., min_length=1, max_length=100)
+class CategorySchema(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True
+
+class ExpenseCreate(BaseModel):
+    merchant: str = Field(..., min_length=1, max_length=200)
     amount: float = Field(..., gt=0)
-    category: str = Field(..., min_length=1, max_length=50)
-    date: date
+    category: str = Field(..., min_length=1)  # Category NAME
+    date: str = Field(..., pattern=r'^\d{4}-\d{2}-\d{2}$')
     notes: Optional[str] = None
 
-
-class ExpenseCreate(ExpenseBase):
-    """Schema for creating a new expense."""
-    pass
+    @field_validator('amount')
+    @classmethod
+    def round_amount(cls, v):
+        return round(v, 2)
 
 
 class ExpenseUpdate(BaseModel):
-    """Schema for updating an expense - all fields optional."""
-    merchant: Optional[str] = Field(None, min_length=1, max_length=100)
+    merchant: Optional[str] = Field(None, min_length=1, max_length=200)
     amount: Optional[float] = Field(None, gt=0)
-    category: Optional[str] = Field(None, min_length=1, max_length=50)
-    date: Optional[date] = None
+    category: Optional[str] = Field(None, min_length=1)  # Category NAME
+    date: Optional[str] = Field(None, pattern=r'^\d{4}-\d{2}-\d{2}$')
     notes: Optional[str] = None
 
 
-class Expense(ExpenseBase):
-    """Schema for expense responses."""
+class ExpenseResponse(BaseModel):
     id: int
-    receipt_url: Optional[str] = None
+    merchant: str
+    amount: float
+    category: str  # Category NAME
+    date: date
+    notes: Optional[str]
+    receipt_url: Optional[str]
     created_at: datetime
-    updated_at: Optional[datetime] = None
-    
+    updated_at: datetime
+
     class Config:
         from_attributes = True
 
 
-class CategorySchema(BaseModel):
-    """Schema for category responses."""
-    id: str
-    name: str
-    icon: str
-    color: str
-    
-    class Config:
-        from_attributes = True
-
-
-class ReceiptOCRResult(BaseModel):
-    """Schema for OCR processing results."""
-    expense: Expense
-    confidence: float = Field(..., ge=0, le=1)
+class OCRResponse(BaseModel):
+    merchant: Optional[str]
+    amount: Optional[float]
+    date: Optional[str]
     raw_text: str
-
-
-class SpendingByCategory(BaseModel):
-    """Schema for spending breakdown by category."""
-    category: str
-    amount: float
-    percentage: float
-    count: int
-
-
-class SpendingSummary(BaseModel):
-    """Schema for spending summary response."""
-    total: float
-    by_category: list[SpendingByCategory]
-    period: dict
-
-
-class TrendDataPoint(BaseModel):
-    """Schema for a single trend data point."""
-    date: str
-    amount: float
-    count: int
-
-
-class SpendingTrends(BaseModel):
-    """Schema for spending trends response."""
-    period: str
-    data: list[TrendDataPoint]
-
-
-class ErrorResponse(BaseModel):
-    """Schema for error responses."""
-    error: str
-    detail: Optional[str] = None
