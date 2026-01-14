@@ -1,262 +1,178 @@
 # Smart Expense Tracker
 
-## 📁 Project Structure
+## Overview
 
+Smart Expense Tracker is a full-stack web application designed to record, store, and analyze personal expenses.  
+The system allows users to create expense records, categorize them, persist data in a relational database, and visualize spending patterns through a web interface.
 
+The project focuses on **clean system architecture**, **API-driven design**, **database integration**, and **containerized deployment**, following modern software engineering practices.
+
+---
+
+## Problem Statement
+
+Many individuals struggle to track their daily expenses consistently and understand their spending behavior over time. Manual methods such as spreadsheets or note-taking are error-prone and provide limited analytical insight.
+
+This project addresses the problem by providing:
+- A structured backend API for expense management
+- A frontend interface for interacting with expense data
+- Persistent storage using a relational database
+- Analytical endpoints to summarize and group spending data
+
+---
+
+## Technologies Used
+
+### Backend
+- **Python 3**
+- **FastAPI** – REST API framework
+- **SQLAlchemy** – ORM for database interaction
+- **Pydantic** – request/response validation
+- **PostgreSQL** – relational database
+- **Uvicorn** – ASGI server
+
+### Frontend
+- **React**
+- **TypeScript**
+- **Vite** – frontend build tool
+- **Recharts** – data visualization
+- **Axios** – API communication
+
+### Infrastructure
+- **Docker**
+- **Docker Compose**
+- **GitHub Actions** – CI pipeline
+
+---
+
+## System Architecture
+
+The system follows a **client–server architecture**:
+
+- **Frontend** communicates with the backend via RESTful HTTP endpoints.
+- **Backend** exposes API routes, handles business logic, and interacts with the database.
+- **Database** stores expenses, categories, and related data.
+- **Docker Compose** orchestrates all services for reproducible execution.
+
+---
+
+## Project Structure
+
+```text
 smart-expense-tracker/
-├── .github/
-│   └── workflows/
-│       └── ci.yml                  # CI pipeline (tests & checks)
-│
 ├── backend/
 │   ├── app/
-│   │   ├── main.py                 # FastAPI app entry point
-│   │   ├── config.py               # Environment & database configuration
-│   │   ├── database.py             # SQLAlchemy engine & session
-│   │   ├── models.py               # Database models
-│   │   ├── schemas.py              # Pydantic request/response schemas
-│   │   ├── routers/                # API route definitions
-│   │   │   ├── expenses.py
-│   │   │   ├── categories.py
-│   │   │   └── analytics.py
-│   │   ├── services/               # Business logic layer
-│   │   │   └── analytics_service.py
-│   │   └── tests/                  # Backend unit & integration tests
-│   │
-│   ├── Dockerfile                  # Backend container definition
-│   │   └── requirements.txt        # Python dependencies
+│   │   ├── main.py              # FastAPI application entry point
+│   │   ├── config.py            # Environment and configuration
+│   │   ├── database.py          # Database engine and session
+│   │   ├── models.py            # SQLAlchemy models
+│   │   ├── schemas.py           # Pydantic schemas
+│   │   ├── routers/             # API routes
+│   │   ├── services/            # Business logic
+│   │   └── tests/               # Backend tests
+│   ├── Dockerfile
+│   └── requirements.txt
 │
 ├── frontend/
 │   ├── src/
-│   │   ├── components/             # Reusable UI components
-│   │   │   └── charts/             # Data visualization components
-│   │   ├── services/               # Centralized API calls
-│   │   ├── types/                  # Shared TypeScript types
-│   │   ├── tests/                  # Frontend tests
-│   │   └── main.tsx
-│   │
-│   ├── public/
-│   ├── Dockerfile                  # Frontend container definition
+│   │   ├── components/          # UI components
+│   │   ├── services/            # API service layer
+│   │   ├── types/               # TypeScript types
+│   │   └── tests/               # Frontend tests
+│   ├── Dockerfile
 │   └── package.json
 │
-├── docker-compose.yml               # Full system orchestration
-├── README.md                        # Project documentation
-└── .env.example                     # Environment variable template
+├── docker-compose.yml            # Service orchestration
+├── .env.example                  # Environment variable template
+└── README.md
+```
+## Backend Implementation
 
-📌 Problem Description
-Managing personal expenses is often fragmented across spreadsheets, notes, or basic mobile apps that provide little insight into spending behavior. Users struggle to understand where their money goes, identify spending patterns, and make informed financial decisions.
+### Architecture Overview
 
-Smart Expense Tracker is a full-stack web application designed to help users:
+The backend is implemented as a **modular FastAPI application** with a clean and maintainable architecture.
 
-Record and categorize daily expenses
+The project follows a **clear separation of concerns**:
 
-Store data persistently in a relational database
+- **Routers** – API layer (HTTP endpoints)
+- **Services** – Business logic
+- **Models** – Database layer (ORM models)
+- **Schemas** – Validation and serialization layer (Pydantic)
 
-Analyze spending trends over time
+### Key Features
 
-Visualize expenses through charts and summaries
+- Database tables are **created automatically on application startup**
+- **Default categories** are inserted during initialization
+- API documentation is **generated automatically via OpenAPI**
+- Clean, scalable structure suitable for production-grade APIs
 
-The system provides a clean user interface backed by a structured REST API and database, enabling reliable tracking and analysis of personal finances.
+---
 
-🤖 AI-Assisted System Development (Tools, Workflow, MCP)
-This project was developed using AI-assisted programming workflows to accelerate development and improve code quality.
+## Frontend Implementation
 
-AI Tools Used
-ChatGPT as a development assistant for:
+### Architecture Overview
 
-Designing FastAPI endpoints
+The frontend is built using **React + TypeScript** with a focus on maintainability and clarity.
 
-Structuring SQLAlchemy models and schemas
+### Key Design Principles
 
-Debugging Docker, database, and import issues
+- **Centralized API calls** through a dedicated service layer
+- **Reusable chart components** for analytics and visualization
+- Clear separation between:
+  - UI components
+  - Application logic
+  - API communication
+- The frontend communicates **exclusively through the backend API**
+- No direct database access from the frontend
 
-Improving system architecture and documentation
+---
 
-Development Workflow
-High-level feature planning and API design
+## API Documentation
 
-Backend scaffolding with FastAPI and SQLAlchemy
+Once the backend is running, API documentation is available at:
 
-Database integration and startup initialization
-
-Frontend development with a centralized API layer
-
-Containerization using Docker and docker-compose
-
-Iterative debugging and refinement using AI feedback
-
-MCP (Model Context Protocol)
-No external MCP server is deployed. However, context-driven prompting was used to maintain consistency across:
-
-API contracts
-
-Database models
-
-Frontend data expectations
-
-This ensured alignment between frontend requirements and backend implementation.
-
-🏗️ Technologies & System Architecture
-Frontend
-React with TypeScript
-
-Vite for development and bundling
-
-Recharts for data visualization
-
-Centralized API communication layer (services/)
-
-Backend
-FastAPI for REST API development
-
-SQLAlchemy ORM
-
-Pydantic schemas for validation
-
-Modular router-based architecture
-
-Database
-PostgreSQL as the primary database
-
-SQLAlchemy abstracts the database layer
-
-Architecture supports alternative databases (e.g., SQLite) with minimal changes
-
-Containerization
-Docker for frontend and backend services
-
-docker-compose orchestrates:
-
-Frontend
-
-Backend
-
-PostgreSQL database
-
-CI/CD
-GitHub Actions
-
-Automated tests and checks on push
-
-🎨 Frontend Implementation
-Fully functional React frontend
-
-Clean and modular component structure
-
-Backend communication centralized in frontend/src/services
-
-Charts and analytics implemented as reusable components
-
-Frontend tests cover core logic and API integration
-
-📜 API Contract (OpenAPI)
-FastAPI automatically generates OpenAPI / Swagger documentation
-
-Available at:
-
-bash
-Copy code
 http://localhost:8000/docs
-The OpenAPI specification serves as the contract between frontend and backend
 
-Endpoints are designed to reflect frontend data requirements precisely
+### Swagger UI Capabilities
 
-⚙️ Backend Implementation
-Well-structured FastAPI application
+Using the Swagger UI, testers can:
 
-Clear separation of concerns:
+- Inspect all available endpoints
+- Submit test requests directly from the browser
+- Verify request and response schemas
+- Validate API behavior without external tools
 
-Routers (API layer)
+---
 
-Services (business logic)
+## Containerization
 
-Models (database layer)
+The entire application is **fully containerized**.
 
-Schemas (validation layer)
+### Services Included
 
-Backend follows the OpenAPI contract
+- Frontend
+- Backend
+- PostgreSQL database
 
-Includes startup database initialization and default data insertion
+All services are managed using **Docker Compose**, ensuring consistent behavior across environments.
 
-Backend tests cover core functionality
+---
 
-🗄️ Database Integration
-PostgreSQL database with persistent Docker volumes
+## How to Run the Project
 
-SQLAlchemy ORM manages all database interactions
+### Requirements
 
-Database initialization runs automatically on startup
+- Docker
+- Docker Compose
 
-Designed to support multiple environments (development and production)
+### Steps
 
-🐳 Containerization
-The entire system runs using docker-compose.
-
-Start the system
-bash
-Copy code
-docker-compose up --build
-Services
-Frontend: http://localhost:5173
-
-Backend API: http://localhost:8000
-
-Database: PostgreSQL (port 5432)
-
-No manual setup steps are required beyond Docker.
-
-🧪 Testing & Validation
-Backend Testing
-Unit and integration tests included
-
-Database-dependent workflows are tested
-
-Tests are isolated from application logic
-
-Frontend Testing
-UI and service-level tests included
-
-Focus on API interaction and core logic
-
-Testing Tips for Reviewers
-Ensure all containers are running before testing
-
-Verify database tables are created on startup
-
-Check /docs endpoint for API availability
-
-Confirm frontend charts update after adding expenses
-
-🚀 Deployment
-Fully containerized and deployment-ready
-
-Can be deployed to any Docker-compatible environment
-
-Reproducible build process using docker-compose
-
-🔁 CI/CD Pipeline
-GitHub Actions workflow included
-
-Automatically runs tests on push
-
-Prevents broken builds from being merged
-
-♻️ Reproducibility
-Requirements
-Docker
-
-Docker Compose
-
-Steps
-bash
-Copy code
+```bash
 git clone <repository-url>
 cd smart-expense-tracker
 docker-compose up --build
-On startup:
+```
 
-Database is initialized
 
-Default categories are inserted
 
-Frontend and backend become immediately usable
+
